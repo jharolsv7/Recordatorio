@@ -268,7 +268,7 @@ private void reproducirSonido() {
         bg.add(cboTipoSonido, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 210, 260, 40));
 
         cboMetDes.setForeground(new java.awt.Color(102, 102, 102));
-        cboMetDes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "PIN", "Puzzle" }));
+        cboMetDes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "PIN" }));
         bg.add(cboMetDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 380, 260, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -323,47 +323,22 @@ private void reproducirSonido() {
         // TODO add your handling code here:
     }//GEN-LAST:event_cboSActionPerformed
 
-    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-    // Obtener la fecha y hora actual
-    LocalDateTime fechaHoraActual = LocalDateTime.now();
+    public void cronometroPin(){
+        // Obtener la fecha y hora actual
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
 
-    // Obtener la fecha seleccionada en el JCalendar
-    Date fecha = cld.getDate();
-    int aa = fecha.getYear() + 1900;
-    int mes = fecha.getMonth() + 1;
-    int dd = fecha.getDate();
+        // Obtener la fecha seleccionada en el JCalendar
+        Date fecha = cld.getDate();
+        int aa = fecha.getYear() + 1900;
+        int mes = fecha.getMonth() + 1;
+        int dd = fecha.getDate();
 
-    // Obtener la hora seleccionada
-    String hora = (String) cboH.getSelectedItem();
-    String min = (String) cboM.getSelectedItem();
-    String seg = (String) cboS.getSelectedItem();
-    
-    if(cboNota.getSelectedIndex()==0){
-        String mensaje = "Seleccione la Nota";
-        JOptionPane.showMessageDialog(null, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);  
-    }else{
-        if(cboTipoSonido.getSelectedIndex()==0){
-            String mensaje = "Seleccione el Sonido";
-            JOptionPane.showMessageDialog(null, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
-            }else if(cboMetDes.getSelectedIndex()==0){
-                String mensaje = "Seleccione el Método de Desactivación";
-                JOptionPane.showMessageDialog(null, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
-            }else{
-                // Obtener el método de desactivación seleccionado
-                String metodoDesactivacion = (String) cboMetDes.getSelectedItem();
-
-                // Dependiendo del método de desactivación, mostrar la notificación correspondiente
-                switch (metodoDesactivacion) {
-                    case "PIN":
-                        txtPin=ingresarPIN();
-                        break;
-                    case "Puzzle":
-                        // Lógica para el método de desactivación con puzzle (si es necesario)
-                        break;
-                    default:
-                        break;
-                }
-                // Crear un objeto LocalDateTime con la fecha seleccionada y la hora seleccionada
+        // Obtener la hora seleccionada
+        String hora = (String) cboH.getSelectedItem();
+        String min = (String) cboM.getSelectedItem();
+        String seg = (String) cboS.getSelectedItem();
+        
+        // Crear un objeto LocalDateTime con la fecha seleccionada y la hora seleccionada
                 LocalDateTime fechaHoraSeleccionada = LocalDateTime.of(aa, mes, dd, Integer.parseInt(hora), Integer.parseInt(min), Integer.parseInt(seg));
 
                 // Calcular la diferencia de tiempo
@@ -480,6 +455,28 @@ private void reproducirSonido() {
                         }
                     }
                 }, Date.from(fechaHoraSeleccionada.atZone(ZoneId.systemDefault()).toInstant()));
+    }
+    
+    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+    
+    
+    if(cboNota.getSelectedIndex()==0){
+        String mensaje = "Seleccione la Nota";
+        JOptionPane.showMessageDialog(null, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);  
+    }else{
+        if(cboTipoSonido.getSelectedIndex()==0){
+            String mensaje = "Seleccione el Sonido";
+            JOptionPane.showMessageDialog(null, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
+            }else if(cboMetDes.getSelectedIndex()==0){
+                String mensaje = "Seleccione el Método de Desactivación";
+                JOptionPane.showMessageDialog(null, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                // Obtener el método de desactivación seleccionado
+                String metodoDesactivacion = (String) cboMetDes.getSelectedItem();
+
+                txtPin=ingresarPIN();
+                cronometroPin();
+                
             }
         }
     }//GEN-LAST:event_btnCrearActionPerformed
@@ -496,6 +493,13 @@ private void reproducirSonido() {
         String pinIngresado = JOptionPane.showInputDialog("Ingrese el PIN:");
         return pinIngresado;
     }
+    
+    //Notificacion de que ha elegido el Puzzle
+    private String resolucionPuzzle() {
+        JOptionPane.showMessageDialog(null,"Haz Seleccionado el Puzzle");
+        return pinIngresado;
+    }
+    
     /**
      * @param args the command line arguments
      */

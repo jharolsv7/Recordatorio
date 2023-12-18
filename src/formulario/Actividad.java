@@ -20,6 +20,7 @@ public class Actividad extends javax.swing.JFrame {
     
     // Declarar el Clip como una variable de instancia para que pueda ser accesible desde diferentes métodos
     private Clip clip;
+    int sonidoOff=0;
     int xMouse, yMouse;
     String pinIngresado, txtPin;
     URL url;
@@ -28,6 +29,12 @@ public class Actividad extends javax.swing.JFrame {
     public Actividad() {
         initComponents();
         this.fechaHoraInicio = fechaHoraInicio;
+    }
+
+//Recibo un entero para comprobacion
+public void confirmacionColores(int valor) {
+        //Cancelo el sonido
+        sonidoOff = valor;
     }
     
 // Método para reproducir el sonido en bucle
@@ -319,11 +326,11 @@ private void reproducirSonido() {
             switch (metodoDesactivacion) {
                 case "PIN":
                     txtPin = ingresarPIN();
-                    Cronometro();
+                    CronometroPin();
                     break;
                 case "Puzzle":
-                    PuzzleFrame puzzleFrame = new PuzzleFrame();
-                    Cronometro();
+                    resolucionPuzzle();
+                    CronometroPuzzle();
                     break;
                 default:
                     break;
@@ -335,9 +342,16 @@ private void reproducirSonido() {
         String pinIngresado = JOptionPane.showInputDialog("Ingrese el PIN:");
         return pinIngresado;
     }
+        
+    //Notificacion de que ha elegido el Puzzle
+    private String resolucionPuzzle() {
+        JOptionPane.showMessageDialog(null,"Haz Seleccionado el Puzzle");
+        return pinIngresado;
+    }
+    
 
     //Funcion que me calcula el tiempo en el acabara la actividad
-    private void Cronometro(){
+    private void CronometroPin(){
         // Obtener la hora seleccionada
         String hora = (String) cboH.getSelectedItem();
         String min = (String) cboM.getSelectedItem();
@@ -453,8 +467,59 @@ private void reproducirSonido() {
         }, Date.from(fechaHoraSeleccionada.atZone(ZoneId.systemDefault()).toInstant()));
     }
         
-    // Método para detener el sonido
-    private void detenerSonido() {
+    
+    private void CronometroPuzzle() {
+        // Obtener la hora seleccionada
+        String hora = (String) cboH.getSelectedItem();
+        String min = (String) cboM.getSelectedItem();
+        String seg = (String) cboS.getSelectedItem();
+
+        // Obtener la fecha y hora actual
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
+
+        // Crear un objeto LocalDateTime con la fecha actual y la hora seleccionada
+        LocalDateTime fechaHoraSeleccionada = LocalDateTime.of(
+                fechaHoraActual.getYear(),
+                fechaHoraActual.getMonthValue(),
+                fechaHoraActual.getDayOfMonth(),
+                Integer.parseInt(hora),
+                Integer.parseInt(min),
+                Integer.parseInt(seg)
+        );
+
+        // Calcular la diferencia de tiempo
+        Duration diferencia = Duration.between(fechaHoraActual, fechaHoraSeleccionada);
+
+        // Crear un temporizador para mostrar la notificación en el momento específico
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Reproducir el sonido en bucle hasta que se ingrese el PIN
+                reproducirSonido();
+                // Mostrar la notificación inicial
+                JOptionPane.showMessageDialog(null, "¡LA ACTIVIDAD A FINALIZADO!");
+                // Mostrar el formulario de Puzzle
+                mostrarFormularioPuzzle();
+            }
+        }, Date.from(fechaHoraSeleccionada.atZone(ZoneId.systemDefault()).toInstant()));
+}
+
+// Método para mostrar el formulario de Puzzle
+private void mostrarFormularioPuzzle() {
+// Pasa la instancia de Actividad al constructor de Puzzle
+    Puzzle puzzle = new Puzzle(this);
+
+    // Muestra el formulario de Puzzle
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            puzzle.setVisible(true);
+        }
+    });
+}
+
+// Método para detener el sonido
+    public void detenerSonido() {
         if (clip != null && clip.isRunning()) {
             clip.stop();
         }
